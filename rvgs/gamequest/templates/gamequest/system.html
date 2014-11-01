@@ -10,6 +10,16 @@
 </p>
 {% if system.emulated %}
 <p>
-    <b>Emulating:</b> {{ system.emulating.systemName }}
+    <b>Emulating:</b> <a href="{% url 'system' system.emulating.id %} ">{{ system.emulating.systemName }}</a>
+</p>
+{% endif %}
+{% if available_emulators %}
+<p>
+    <b>Available Emulators:</b><br>
+    <ul>
+    {% for emulator in available_emulators.all %}
+	<li><a href="{% url 'system' emulator.id %}">{{emulator.systemName}}</a></li>
+    {% endfor %}
+    </ul>
 </p>
 {% endif %}

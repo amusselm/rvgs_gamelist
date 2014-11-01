@@ -17,6 +17,8 @@ def systemInfo(request, system_id):
     except System.DoesNotExist:
 	raise Http404
     else:
-	context =  {'system':system}	
+	availableEmulators = System.objects.filter(emulating=system)
+	context =  {'system':system,
+		    'available_emulators':availableEmulators,}	
 	return render(request,'gamequest/system.html',context)
 
