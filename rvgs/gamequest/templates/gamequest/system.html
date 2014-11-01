@@ -1,0 +1,15 @@
+<p>
+    <b>Name:</b> {{ system.systemName }}
+</p>
+<p>
+    <b>Description:</b>
+    {{ system.systemDescription }}
+</p>
+<p>
+    <b>Emulated:</b> {{ system.emulated }}
+</p>
+{% if system.emulated %}
+<p>
+    <b>Emulating:</b> {{ system.emulating.systemName }}
+</p>
+{% endif %}

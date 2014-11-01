@@ -9,6 +9,8 @@ class System(models.Model):
     systemName = models.CharField(max_length=100)
     systemDescription = models.CharField(max_length=512)
     emulated = models.BooleanField(default=False)
-    #`emulating = models.ForeignKey("System")
+    emulating = models.ForeignKey("System",blank=True, null=True, on_delete=models.SET_NULL)
+    def __str__(self):
+	return self.systemName
 
 
