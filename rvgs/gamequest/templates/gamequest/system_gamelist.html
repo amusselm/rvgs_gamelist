@@ -1,0 +1,17 @@
+<p>
+    <b>Games for System:</b>{{ system.systemName }}
+</p>
+{% if system.emulated %}
+<p>
+    <b>Emulating:</b> <a href="{% url 'system' system.emulating.id %} ">{{ system.emulating.systemName }}</a>
+</p>
+{% endif %}
+
+<p>
+    <ul>
+	{% for game in ports %}
+	<li><a href="{% url 'game' game.id %}">{{ game.name }}</a></li>
+	{% endfor %}
+    </ul>
+</p> 
+	

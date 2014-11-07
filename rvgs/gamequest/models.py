@@ -14,3 +14,12 @@ class System(models.Model):
 	return self.systemName
 
 
+class Game(models.Model):
+    """
+    An object to represent a particular game title. Keeps track of all platforms
+    that the game has been ported to.
+    """
+    name = models.CharField(max_length=100)
+    ports = models.ManyToManyField(System)
+    def __str__(self):
+	return self.name
