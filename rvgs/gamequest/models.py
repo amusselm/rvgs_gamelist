@@ -55,6 +55,7 @@ class Unlock(models.Model):
     user = models.ForeignKey(User,blank=False, null=False,on_delete=models.CASCADE)
     timestamp = models.DateField(auto_now_add=True) 
     achievement = models.ForeignKey(Achievement,blank=False,null=False,on_delete=models.CASCADE)
+    contest = models.ManyToManyField(Contest)
     def __str__(self):
 	return self.achievement.__str__() + " unlocked by " + self.user.username
 
