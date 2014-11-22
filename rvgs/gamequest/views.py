@@ -60,6 +60,8 @@ def contestInfo(request, contest_id):
     except Contest.DoesNotExist:
 	raise Http404
     else:
-	context = {'contest':contest,} 
+	recent_unlocks = Unlock.objects.filter(contest__id = contest_id)
+	recent_unlocks.order_by('timestamp')[:10]
+	context = {'contest':contest,'recent_unlocks':recent_unlocks,} 
 	return render(request,'gamequest/contest.html',context)
 

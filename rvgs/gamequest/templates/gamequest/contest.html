@@ -4,4 +4,11 @@
  <p>
    <b>Description:</b> {{ contest.description }}
 </p>
- 
+<p>
+    <b>Recent Unlocks:</b>
+    <ol>    
+    {% for unlock in recent_unlocks %}
+	<li>{{ unlock }} at {{ unlock.timestamp }}</li>
+    {% endfor %}
+</p>
+
