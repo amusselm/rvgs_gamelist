@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
 
-from models import System, Game
+from models import *
 
 # Create your views here.
 def index(request):
@@ -45,9 +45,21 @@ def gameInfo(request, game_id):
     """
     try:
 	game = Game.objects.get(pk=game_id)
-    except System.DoesNotExist:
+    except Game.DoesNotExist:
 	raise Http404
     else:
 	context = {'game':game,}
 	return render(request,'gamequest/game.html',context)
+
+def contestInfo(request, contest_id):
+    """
+    Display information about a given contest
+    """
+    try:
+	contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+	raise Http404
+    else:
+	context = {'contest':contest,} 
+	return render(request,'gamequest/contest.html',context)
 
