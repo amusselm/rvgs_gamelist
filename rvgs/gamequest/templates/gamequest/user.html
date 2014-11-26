@@ -9,7 +9,7 @@
 	    <b>Upcoming</b>
 	    <ul>
 	    {% for contest in upcoming %}
-		<li>{{contest.name}}</li>
+		<li><a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">{{contest.name}}</a></li>
 	    {% endfor %}
 	    </ul>
 	</p>
@@ -19,7 +19,7 @@
 	    <b>Active</b>
 	    <ul>
 	    {% for contest in active %}
-		<li>{{contest.name}}</li>
+		<li><a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">{{contest.name}}</a></li>
 	    {% endfor %}
 	    </ul>
 	</p>
@@ -29,7 +29,7 @@
 	    <b>Archive</b>
 	    <ul>
 	    {% for contest in archive %}
-		<li>{{contest.name}}</li>
+		<li><a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">{{contest.name}}</a></li>
 	    {% endfor %}
 	    </ul>
 	</p>
