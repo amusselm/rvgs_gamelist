@@ -2,3 +2,27 @@
     <b><a href="{% url 'user' user.username %}">{{ user.username }}'s</a> profile for 
     <a href="{% url 'contest' contest.id %}">{{ contest.name }}</a></b>
 </p>
+<p>
+    <b>Completed Achievements:</b>
+    <ul>
+    {% for unlock in unlocks %}
+	<li>{{unlock.achievement.name}} in <a href="{% url 'game' unlock.achievement.game.id %}">{{unlock.achievement.game.name}}</a></li>
+    {% endfor %}
+    </ul>
+
+</p>
+<p>
+    <b>Achievement Lists</b> 
+    <ul>
+    {% for list in achievement_lists %}
+	<li>{{ list.name }}
+	    <ul>
+	    {% for achievement in list.achievements.all %}
+		<li>{{ achievement }}</li>
+	    {% endfor %}
+	    </ul>
+	</li>
+    {% endfor %}
+    </ul>
+</p>
+

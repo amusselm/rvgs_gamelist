@@ -75,7 +75,12 @@ def contestParticipantProfile(request, contest_id, requested_username):
     except Contest.DoesNotExist:
 	raise Http404
     else:
-	context = {'contest':contest,'user':user}
+	unlocks = Unlock.objects.filter(contest__id = contest.id).filter(user=user)
+	achievement_lists = AchievementList.objects.filter(contest__id = contest.id).filter(owner=user)
+	context = {'contest':contest,
+		   'user':user, 
+		   'unlocks':unlocks,
+		   'achievement_lists':achievement_lists}
 	return render(request,'gamequest/contest_participant.html',context)
     
 
