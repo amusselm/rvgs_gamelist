@@ -65,3 +65,14 @@ def contestInfo(request, contest_id):
 	context = {'contest':contest,'recent_unlocks':recent_unlocks,} 
 	return render(request,'gamequest/contest.html',context)
 
+def userProfile(request, requested_username):
+    """
+    Display a user's profile page
+    """
+    try:
+	user = User.objects.get(username=requested_username)
+    except User.DoesNotExist:
+	raise Http404
+    else:
+	context = {'user':user,}
+	return render(request,'gamequest/user.html',context)
