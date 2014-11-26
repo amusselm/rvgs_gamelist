@@ -31,6 +31,7 @@ class Contest(models.Model):
     """
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=4096)
+    upcoming = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
     archive = models.BooleanField(default=False)
     participants = models.ManyToManyField(User)
