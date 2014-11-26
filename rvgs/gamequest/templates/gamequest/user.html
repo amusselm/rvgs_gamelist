@@ -1,3 +1,42 @@
 <p>
     <b>{{ user.username }}'s profile page</b>
 </p>
+{% if upcoming or active or archive %}
+<p>
+    <b>User Contests:</b>
+    {% if upcoming %}
+	<p>
+	    <b>Upcoming</b>
+	    <ul>
+	    {% for contest in upcoming %}
+		<li>{{contest.name}}</li>
+	    {% endfor %}
+	    </ul>
+	</p>
+    {% endif %}
+    {% if active %}
+	<p>
+	    <b>Active</b>
+	    <ul>
+	    {% for contest in active %}
+		<li>{{contest.name}}</li>
+	    {% endfor %}
+	    </ul>
+	</p>
+    {% endif %}
+    {% if archive %}
+	<p>
+	    <b>Archive</b>
+	    <ul>
+	    {% for contest in archive %}
+		<li>{{contest.name}}</li>
+	    {% endfor %}
+	    </ul>
+	</p>
+    {% endif %}
+
+{% else %}
+<p>
+    User has not participated in any contests
+</p>
+{% endif %}

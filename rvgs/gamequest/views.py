@@ -74,5 +74,11 @@ def userProfile(request, requested_username):
     except User.DoesNotExist:
 	raise Http404
     else:
-	context = {'user':user,}
+	upcoming_contests = Contest.objects.filter(participants=user).filter(upcoming=True)
+	active_contests = Contest.objects.filter(participants=user).filter(active=True)
+	archive_contests = Contest.objects.filter(participants=user).filter(archive=True)
+	context = {'user':user,
+		   'upcoming':upcoming_contests,
+		   'active':active_contests,
+		   'archive':archive_contests,}
 	return render(request,'gamequest/user.html',context)
