@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Game Quest {% endblock %} </title>
+</head>
+<body>
+<div id="top_heading">
+    {% block top_heading %}
+    <h1>Game Quest</h1>
+    <br>
+    <hr>
+    <div id="menu_bar">
+	{% block menu_bar %}
+	Menu bar will go here
+	{% endblock %}
+    </div>
+    <hr>
+    {% endblock %}
+</div>
+<div id="content">
+    {% block content %}
+    Content will go here!
+    {% endblock %}
+</div>
+
+</body>
+</html>

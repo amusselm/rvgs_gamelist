@@ -1,3 +1,7 @@
+
+{% extends "gamequest/base.html" %}
+
+{% block content %}
 <p>
    <b>Name:</b> {{ contest.name }}
 </p>
@@ -17,4 +21,4 @@
     <b>Participants:</b>
     <a href="{% url 'contest_participant_list' contest_id=contest.id %}">Full Participant List</a>
 </p> 
-
+{% endblock %}

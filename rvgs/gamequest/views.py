@@ -6,7 +6,7 @@ from models import *
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Index!")
+    return render(request, 'gamequest/base.html')
 
 def systemInfo(request, system_id):
     """

@@ -1,3 +1,6 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
 <p>
     <b>Games for System:</b>{{ system.systemName }}
 </p>
@@ -14,4 +17,4 @@
 	{% endfor %}
     </ul>
 </p> 
-	
+	{% endblock %}
