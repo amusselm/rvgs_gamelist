@@ -1,0 +1,8 @@
+<p>
+    <b>Participants in <a href="{% url 'contest' contest.id %}">{{ contest.name }}</a></b>
+    <ul>
+	{% for user in contest.participants.all %}  
+	<li><a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">{{user.username}}</a></li>
+	{% endfor %}
+    </ul>
+</p>

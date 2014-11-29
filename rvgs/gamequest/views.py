@@ -65,6 +65,18 @@ def contestInfo(request, contest_id):
 	context = {'contest':contest,'recent_unlocks':recent_unlocks,} 
 	return render(request,'gamequest/contest.html',context)
 
+def contestParticipantList(request, contest_id):
+    """
+    Display a list of all participants in a given contest
+    """
+    try:
+	contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+	raise Http404
+    else:
+	context = {'contest':contest,}
+	return render (request, 'gamequest/contest_participant_list.html',context)
+
 def contestParticipantProfile(request, contest_id, requested_username):
     """
     Display information about a users's participation in a given contest

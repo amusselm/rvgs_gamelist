@@ -10,5 +10,11 @@
     {% for unlock in recent_unlocks %}
 	<li>{{ unlock }} at {{ unlock.timestamp }}</li>
     {% endfor %}
+    </ol>
 </p>
+
+<p>
+    <b>Participants:</b>
+    <a href="{% url 'contest_participant_list' contest_id=contest.id %}">Full Participant List</a>
+</p> 
 
