@@ -1,5 +1,6 @@
 #VIM swapfiles
 *.swp
+*.swo
 
 #SQLITE database
 *.sqlite3
