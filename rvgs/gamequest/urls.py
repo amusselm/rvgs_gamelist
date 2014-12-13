@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     url(r'^contest/(?P<contest_id>\d+)/participants$', views.contestParticipantList, name='contest_participant_list'), 
     url(r'^contest/(?P<contest_id>\d+)/user/(?P<requested_username>\w+)$', views.contestParticipantProfile, name='contest_participant'), 
     url(r'^user/(?P<requested_username>\w+)$', views.userProfile, name='user'), 
+    url(r'^auth/login$', views.login, name="login"),
+    url(r'^auth/logout$',views.index, name="logout"),
 )

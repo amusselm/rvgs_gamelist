@@ -90,7 +90,7 @@ def contestParticipantProfile(request, contest_id, requested_username):
 	unlocks = Unlock.objects.filter(contest__id = contest.id).filter(user=user)
 	achievement_lists = AchievementList.objects.filter(contest__id = contest.id).filter(owner=user)
 	context = {'contest':contest,
-		   'user':user, 
+		   'participant':user, 
 		   'unlocks':unlocks,
 		   'achievement_lists':achievement_lists}
 	return render(request,'gamequest/contest_participant.html',context)
@@ -108,8 +108,15 @@ def userProfile(request, requested_username):
 	upcoming_contests = Contest.objects.filter(participants=user).filter(upcoming=True)
 	active_contests = Contest.objects.filter(participants=user).filter(active=True)
 	archive_contests = Contest.objects.filter(participants=user).filter(archive=True)
-	context = {'user':user,
+	context = {'participant':user,
 		   'upcoming':upcoming_contests,
 		   'active':active_contests,
 		   'archive':archive_contests,}
 	return render(request,'gamequest/user.html',context)
+
+def login(request):
+    """
+    Display and proscess the login page
+    """
+    context = { }
+    return render(request,'gamequest/login.html',context)
