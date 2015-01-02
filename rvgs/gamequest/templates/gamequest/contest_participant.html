@@ -2,7 +2,7 @@
 
 {% block content %}
 <p>
-    <b><a href="{% url 'user' participant.username %}">{{ participant.username }}'s</a> profile for 
+    <b><a href="{% url 'user_profile' participant.username %}">{{ participant.username }}'s</a> profile for 
     <a href="{% url 'contest' contest.id %}">{{ contest.name }}</a></b>
 </p>
 <p>

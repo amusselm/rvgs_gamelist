@@ -19,7 +19,7 @@
         </div>
     <div id="user">
         {% if user.is_authenticated %}
-        {{user.username}}
+        <a href="{% url 'user_profile' user.username %}">{{user.username}}</a>
         <a href="{% url 'logout' %}">(logout)</a>
         {% else %}
         You are not logged in. <a href="{% url 'login' %}">Login.</a>
