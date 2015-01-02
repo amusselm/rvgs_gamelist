@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 
 from models import *
 
@@ -101,22 +103,25 @@ def userProfile(request, requested_username):
     Display a user's profile page
     """
     try:
-	user = User.objects.get(username=requested_username)
+        user = User.objects.get(username=requested_username)
     except User.DoesNotExist:
-	raise Http404
+        raise Http404
     else:
-	upcoming_contests = Contest.objects.filter(participants=user).filter(upcoming=True)
-	active_contests = Contest.objects.filter(participants=user).filter(active=True)
-	archive_contests = Contest.objects.filter(participants=user).filter(archive=True)
-	context = {'participant':user,
+        upcoming_contests = Contest.objects.filter(participants=user).filter(upcoming=True)
+        active_contests = Contest.objects.filter(participants=user).filter(active=True)
+        archive_contests = Contest.objects.filter(participants=user).filter(archive=True)
+        context = {'participant':user,
 		   'upcoming':upcoming_contests,
 		   'active':active_contests,
 		   'archive':archive_contests,}
 	return render(request,'gamequest/user.html',context)
 
-def login(request):
+def userProfileRedirect(request):
     """
-    Display and proscess the login page
+    Redirect to the user profile for the logged in user. If the user is not logged in,
+    redirect to the login page. 
     """
-    context = { }
-    return render(request,'gamequest/login.html',context)
+    if (request.user.is_authenticated()):
+        return redirect('user_profile', requested_username=request.user.get_username())
+    else:
+        return redirect('login')
