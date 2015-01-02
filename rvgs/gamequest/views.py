@@ -81,6 +81,20 @@ def contestParticipantList(request, contest_id):
         context = {'contest':contest,}
     return render (request, 'gamequest/contest_participant_list.html',context)
 
+def contestAchievementListsAll(request, contest_id):
+    """
+    Display a list of all achievement lists assoicated with a contest
+    """
+    try:
+        contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+        raise Http404
+    else:
+        achievement_lists = AchievementList.objects.filter(contest__id = contest.id)
+        context = {'contest':contest,'achievement_lists':achievement_lists,}
+        return render(request,'gamequest/contest_achievement_list.html',context)
+        
+
 def contestParticipantProfile(request, contest_id, requested_username):
     """
     Display information about a users's participation in a given contest

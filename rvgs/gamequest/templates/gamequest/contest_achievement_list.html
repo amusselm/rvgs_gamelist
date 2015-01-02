@@ -1,0 +1,19 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+<p>
+    <b>Achievement Lists for <a href="{% url 'contest' contest.id %}">{{ contest.name }}</a></b>
+</p>
+<ul>
+{% for list in achievement_lists %}  
+    <li>{{ list.name }}
+        <ul>
+	    {% for achievement in list.achievements.all %}
+            <li>{{ achievement }}</li>
+	    {% endfor %}
+        </ul>
+    </li>
+{% endfor %} 
+</ul>
+
+{% endblock %}
