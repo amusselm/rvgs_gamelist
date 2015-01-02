@@ -16,12 +16,18 @@
 </p>
 <p>
     <b>Achievement Lists</b> 
+    {% if user.is_authenticated and participant = user and contest.upcoming %}
+        <a href="{% url 'create_achievement_list' contest.id %}">(add)</a>
+    {% endif %}
     <ul>
     {% for list in achievement_lists %}
 	<li>{{ list.name }}
+        {% if user.is_authenticated and participant = user %}
+            (edit)
+        {% endif %}
 	    <ul>
 	    {% for achievement in list.achievements.all %}
-		<li>{{ achievement }}</li>
+            <li>{{ achievement }}</li>
 	    {% endfor %}
 	    </ul>
 	</li>

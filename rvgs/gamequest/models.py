@@ -72,8 +72,6 @@ class AchievementList(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=4096)
     def __str__(self):
-	return self.owner.username + "'s " + self.name + " list for " + self.contest.name
-
-
+        return self.owner.username + "'s " + self.name + " list for " + self.contest.name
 
 

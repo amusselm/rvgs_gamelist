@@ -1,0 +1,20 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+<p>
+{% if form.errors %}
+<p class="error">There was an error with your submission</p>
+{% endif %}
+{% if create %}
+<form method="post" action="{% url 'create_achievement_list' contest.id %}">
+{% else %}
+<form method="post" action="{% url 'create_achievement_list' contest.id achievement_list.id %}">
+{% endif %}
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+
+</p>
+{% endblock %}
