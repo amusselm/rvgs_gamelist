@@ -21,4 +21,9 @@
     <b>Participants:</b>
     <a href="{% url 'contest_participant_list' contest_id=contest.id %}">Full Participant List</a>
 </p> 
+<p>
+    <b>Achievement Lists:</b>
+    <a href="{% url 'contest_achievement_list_viewall' contest_id=contest.id %}">All Achievement Lists</a>
+
+</p>
 {% endblock %}
