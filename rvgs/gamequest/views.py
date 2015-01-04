@@ -144,45 +144,70 @@ def userProfileRedirect(request):
 
 
 @login_required 
-def achievementListEdit(request,contest_id,achievement_list_id=None):
+def achievementListEdit(request,contest_id,achievement_list_id):
     """
-    Proscesses the form when the user adds or edits an Achievement Lists's name or 
+    Proscesses the form when the user edits an Achievement Lists's name or 
     description. Or displays the form in the first place in the event of a GET request
     """
-    create = True
     try:
         contest = Contest.objects.get(pk=contest_id)
     except Contest.DoesNotExist:
         raise Http404
     if(achievement_list_id != None):
-        #We have an existing achievement list, therefore we don't need to create one
-        create = False 
         try: 
             achievement_list = AchievementList.objects.get(pk=achievement_list_id)
         except AchievementList.DoesNotExist: 
             raise HTTP404
 
     if request.method == 'POST':
-        if(create):
-            form = AchievementListForm(request.POST)
-        else:
-            form = AchievementListForm(request.POST,instance=achievement_list)
+        form = AchievementListForm(request.POST,instance=achievement_list)
         if form.is_valid():
-            if(create):
-                new_list = form.save(commit=False)
-                new_list.owner = request.user 
-                new_list.contest = contest
+            if (user == achievement_list.owner and contest == achievement_list.contest):
                 new_list.save()
-            else:
-                if (user == achievement_list.owner and contest == achievement_list.contest):
-                    new_list.save()
-            redirect('contest_participant',contest_id,request.user.get_username())    
+                return redirect('contest_participant',contest_id,request.user.get_username())    
     else:
-        if(create):
-            form = AchievementListForm()
-        else:
-            form = AchievementListForm(instance=achievement_list)
+        form = AchievementListForm(instance=achievement_list)
     
+    context = { 'form':form, 
+                'contest':contest, 
+                'achievement_list':achievement_list,} 
+    return render(request,'gamequest/edit_achievement_list.html',context)    
+
+@login_required
+def achievementListCreate(request,contest_id):
+    create = True
+    try:
+        contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+        raise Http404
+    if request.method == 'POST':
+        form = AchievementListForm(request.POST)
+        if form.is_valid():
+            new_list = form.save(commit=False)
+            new_list.owner = request.user 
+            new_list.contest = contest
+            new_list.save()
+    else:
+        form = AchievementListForm()
     context = { 'form':form, 'contest':contest, 'create':create} 
     return render(request,'gamequest/edit_achievement_list.html',context)    
 
+@login_required 
+def achievementListAddAchievements(request,contest_id,achievement_list_id):
+    try:
+        contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+        raise Http404
+    try: 
+        achievement_list = AchievementList.objects.get(pk=achievement_list_id)
+    except AchievementList.DoesNotExist: 
+        raise HTTP404
+    if request.method == 'POST':
+        form = AddAchievementForm(request.POST)
+    else:
+        form = AddAchievementForm()
+
+    contest = {'contest':contest,
+               'achievement_list':achievement_list,
+                'form':form,}
+    return render(request,'gamequest/edit_achievement_list_achievements.html',contest)

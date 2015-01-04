@@ -23,7 +23,7 @@
     {% for list in achievement_lists %}
 	<li>{{ list.name }}
         {% if user.is_authenticated and participant = user %}
-            (edit)
+            <a href="{% url 'edit_achievement_list' contest_id=contest.id achievement_list_id=list.id %}">(edit)</a>
         {% endif %}
 	    <ul>
 	    {% for achievement in list.achievements.all %}

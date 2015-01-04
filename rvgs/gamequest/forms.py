@@ -1,5 +1,6 @@
-from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm 
+from django.forms import Form 
+from django import forms 
 
 from gamequest.models import *
 
@@ -12,3 +13,10 @@ class AchievementListForm(ModelForm):
     class Meta:
         model = AchievementList
         fields = ['name','description']
+
+class AddAchievementForm(Form):
+    """
+    Form presented to the user when adding achievements to an achievement list.
+    """
+    game = forms.ChoiceField(required=False)
+    achievement = forms.ChoiceField(required=True)
