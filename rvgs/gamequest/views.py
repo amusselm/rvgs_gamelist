@@ -162,9 +162,8 @@ def achievementListEdit(request,contest_id,achievement_list_id):
     if request.method == 'POST':
         form = AchievementListForm(request.POST,instance=achievement_list)
         if form.is_valid():
-            if (user == achievement_list.owner and contest == achievement_list.contest):
-                new_list.save()
-                return redirect('contest_participant',contest_id,request.user.get_username())    
+            if (request.user == achievement_list.owner and contest == achievement_list.contest):
+                new_list = form.save()
     else:
         form = AchievementListForm(instance=achievement_list)
     
@@ -187,6 +186,7 @@ def achievementListCreate(request,contest_id):
             new_list.owner = request.user 
             new_list.contest = contest
             new_list.save()
+            return redirect('edit_achievement_list',contest_id,new_list.id)
     else:
         form = AchievementListForm()
     context = { 'form':form, 'contest':contest, 'create':create} 
@@ -202,8 +202,18 @@ def achievementListAddAchievements(request,contest_id,achievement_list_id):
         achievement_list = AchievementList.objects.get(pk=achievement_list_id)
     except AchievementList.DoesNotExist: 
         raise HTTP404
+
     if request.method == 'POST':
         form = AddAchievementForm(request.POST)
+        if form.is_valid() and contest.upcoming and achievement_list.owner == request.user:
+            try:
+                new_achievement = Achievement.objects.get(pk=form.cleaned_data['achievement']) 
+            except Contest.DoesNotExist:
+                raise Http404
+            else:
+                achievement_list.achievements.add(new_achievement) 
+                achievement_list.save()
+                return redirect('edit_achievement_list',contest_id,achievement_list_id)
     else:
         form = AddAchievementForm()
 

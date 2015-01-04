@@ -18,5 +18,9 @@ class AddAchievementForm(Form):
     """
     Form presented to the user when adding achievements to an achievement list.
     """
-    game = forms.ChoiceField(required=False)
     achievement = forms.ChoiceField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(AddAchievementForm,self).__init__(*args,**kwargs)
+        achievement_choices = [(achievement.id, unicode(achievement.game.name + "-" +achievement.name)) for achievement in Achievement.objects.all()]
+        self.fields['achievement'].choices = achievement_choices
