@@ -174,6 +174,7 @@ def achievementListEdit(request,contest_id,achievement_list_id):
 
 @login_required
 def achievementListCreate(request,contest_id):
+    """A view to create a new achievement list for a particular contest"""
     create = True
     try:
         contest = Contest.objects.get(pk=contest_id)
@@ -194,6 +195,10 @@ def achievementListCreate(request,contest_id):
 
 @login_required 
 def achievementListRemoveAchievement(request,contest_id,achievement_list_id,achievement_id):
+    """
+    Gives the user a confirmation page to remove a specific achievement from a list, or
+    if it receives a POSt requrest, does the removal
+    """
     try:
         contest = Contest.objects.get(pk=contest_id)
     except Contest.DoesNotExist:
@@ -221,6 +226,9 @@ def achievementListRemoveAchievement(request,contest_id,achievement_list_id,achi
 
 @login_required 
 def achievementListAddAchievements(request,contest_id,achievement_list_id):
+    """
+    Allows a user to select and add an existing achievement to an achievement list
+    """
     try:
         contest = Contest.objects.get(pk=contest_id)
     except Contest.DoesNotExist:
