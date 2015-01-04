@@ -36,7 +36,7 @@ class Contest(models.Model):
     archive = models.BooleanField(default=False)
     participants = models.ManyToManyField(User)
     def __str__(self):
-	return self.name
+        return self.name
 
 class Achievement(models.Model):
     """
@@ -47,7 +47,7 @@ class Achievement(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=4096)
     def __str__(self):
-	return self.game.name + " - " + self.name
+        return self.game.name + " - " + self.name
     
 
 class Unlock(models.Model):
@@ -59,7 +59,7 @@ class Unlock(models.Model):
     achievement = models.ForeignKey(Achievement,blank=False,null=False,on_delete=models.CASCADE)
     contest = models.ManyToManyField(Contest)
     def __str__(self):
-	return self.achievement.__str__() + " unlocked by " + self.user.username
+        return self.achievement.__str__() + " unlocked by " + self.user.username
 
 class AchievementList(models.Model):
     """
