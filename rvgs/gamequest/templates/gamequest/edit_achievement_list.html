@@ -18,7 +18,11 @@
 <a href="{% url 'edit_achievement_list_add' contest_id=contest.id achievement_list_id=achievement_list.id %}">Add Achievement</a>
 <ul>
     {% for achievement in achievement_list.achievements.all %}
-    <li>{{ achievement }}</li>
+    <li>
+        {{ achievement }}
+        <a href="{% url 'edit_achievement_list_remove' contest_id=contest.id achievement_list_id=achievement_list.id achievement_id=achievement.id %}">
+            (remove)
+        </a>
     {% endfor %}
 </ul>
 

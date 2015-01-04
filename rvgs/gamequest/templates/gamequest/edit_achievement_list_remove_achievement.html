@@ -1,0 +1,12 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+<p>
+    <form method="post" 
+        action="{% url 'edit_achievement_list_remove' contest_id=contest.id achievement_list_id=achievement_list.id achievement_id=achievement.id %}">
+        <b>Remove Achievement {{achievement}} from {{achievement_list}}?</b>
+        {% csrf_token %}
+        <input type="Submit" value="Ok">
+    </form>
+</p>
+{% endblock %}

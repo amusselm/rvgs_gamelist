@@ -193,6 +193,33 @@ def achievementListCreate(request,contest_id):
     return render(request,'gamequest/edit_achievement_list.html',context)    
 
 @login_required 
+def achievementListRemoveAchievement(request,contest_id,achievement_list_id,achievement_id):
+    try:
+        contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+        raise Http404
+    try: 
+        achievement_list = AchievementList.objects.get(pk=achievement_list_id)
+    except AchievementList.DoesNotExist: 
+        raise HTTP404
+    try:
+        achievement = Achievement.objects.get(pk=achievement_id)
+    except Achievement.DoesNotExist:
+        raise HTTP404
+
+    if request.method == 'POST':
+        if (request.user == achievement_list.owner and contest == achievement_list.contest):
+            achievement_list.achievements.remove(achievement)
+        return redirect('edit_achievement_list',contest.pk,achievement_list.pk)
+    else:
+        context  = {'contest':contest,
+                    'achievement_list':achievement_list,
+                    'achievement':achievement
+                    }
+        return render(request,'gamequest/edit_achievement_list_remove_achievement.html',context)
+
+
+@login_required 
 def achievementListAddAchievements(request,contest_id,achievement_list_id):
     try:
         contest = Contest.objects.get(pk=contest_id)
@@ -217,7 +244,7 @@ def achievementListAddAchievements(request,contest_id,achievement_list_id):
     else:
         form = AddAchievementForm()
 
-    contest = {'contest':contest,
+    context = {'contest':contest,
                'achievement_list':achievement_list,
                 'form':form,}
-    return render(request,'gamequest/edit_achievement_list_achievements.html',contest)
+    return render(request,'gamequest/edit_achievement_list_achievements.html',context)
