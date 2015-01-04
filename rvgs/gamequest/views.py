@@ -223,6 +223,33 @@ def achievementListRemoveAchievement(request,contest_id,achievement_list_id,achi
                     }
         return render(request,'gamequest/edit_achievement_list_remove_achievement.html',context)
 
+@login_required 
+def achievementListRemove(request,contest_id,achievement_list_id):
+    """
+    Gives the user a confirmation page to remove a specific achievement from a list, or
+    if it receives a POSt requrest, does the removal
+    """
+    #It's worth noting that this is very similar to removing an achievement from an
+    # achievement list. As such, these functions should be refactored eventually
+    try:
+        contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+        raise Http404
+    try: 
+        achievement_list = AchievementList.objects.get(pk=achievement_list_id)
+    except AchievementList.DoesNotExist: 
+        raise HTTP404
+    if request.method == 'POST':
+        if (request.user == achievement_list.owner and contest == achievement_list.contest):
+            achievement_list.delete()
+            return redirect('contest_participant',contest.pk,request.user.get_username())
+    else:
+        context  = {'contest':contest,
+                    'achievement_list':achievement_list,
+                    }
+        return render(request,'gamequest/remove_achievement_list.html',context)
+
+
 
 @login_required 
 def achievementListAddAchievements(request,contest_id,achievement_list_id):

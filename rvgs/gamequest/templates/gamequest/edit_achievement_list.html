@@ -8,6 +8,9 @@
 {% if create %}
 <form method="post" action="{% url 'create_achievement_list' contest.id %}">
 {% else %}
+<a href="{% url 'remove_achievement_list' contest_id=contest.id achievement_list_id=achievement_list.id %}">
+    Delete List
+</a>
 <form method="post" action="{% url 'edit_achievement_list' contest.id achievement_list.id %}">
 {% endif %}
     {% csrf_token %}
