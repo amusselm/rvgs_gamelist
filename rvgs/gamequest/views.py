@@ -302,6 +302,14 @@ class AchievementLissRefrenceBaseView(FormView):
             from_list = self.request.POST.get('from_list')
         return from_list
 
+    def get_context_data(self, **kwargs):
+        context = super( AchievementLissRefrenceBaseView, self).get_context_data(**kwargs)
+        from_contest = self.get_contest() 
+        from_list = self.get_list() 
+        context['from_contest'] = from_contest
+        context['from_list'] = from_list
+        return context
+
 class AddAchievementView(AchievementLissRefrenceBaseView):
     template_name = 'gamequest/add_achievement.html'
     form_class = AddAchievementForm
@@ -317,11 +325,4 @@ class AddAchievementView(AchievementLissRefrenceBaseView):
         form.save()
         return super(AddAchievementView,self).form_valid(form)
     
-    def get_context_data(self, **kwargs):
-        context = super(AddAchievementView, self).get_context_data(**kwargs)
-        from_contest = super(AddAchievementView,self).get_contest() 
-        from_list = super(AddAchievementView,self).get_list() 
-        context['from_contest'] = from_contest
-        context['from_list'] = from_list
-        return context
-             
+
