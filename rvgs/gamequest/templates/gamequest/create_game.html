@@ -9,5 +9,6 @@
     <input type="hidden" name="from_list" value="{{from_list}}">
     <input type="submit" value="Submit">
 </form>
+<a href="{% url 'add_achievement' %}?from_list={{from_list}}&from_contest={{from_contest}}">Cancel</a>
 
 {% endblock %}

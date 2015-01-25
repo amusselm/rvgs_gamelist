@@ -8,5 +8,6 @@
         {% csrf_token %}
         <input type="Submit" value="Ok">
     </form>
+    <a href="{% url 'edit_achievement_list' contest_id=contest.id achievement_list_id=achievement_list.id %}">Cancel</a>
 </p>
 {% endblock %}
