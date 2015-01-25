@@ -4,6 +4,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import FormView
 
 from models import *
 from gamequest.forms import *
@@ -266,7 +267,7 @@ def achievementListAddAchievements(request,contest_id,achievement_list_id):
         raise HTTP404
 
     if request.method == 'POST':
-        form = AddAchievementForm(request.POST)
+        form = AddAchievementToListForm(request.POST)
         if form.is_valid() and contest.upcoming and achievement_list.owner == request.user:
             try:
                 new_achievement = Achievement.objects.get(pk=form.cleaned_data['achievement']) 
@@ -277,9 +278,43 @@ def achievementListAddAchievements(request,contest_id,achievement_list_id):
                 achievement_list.save()
                 return redirect('edit_achievement_list',contest_id,achievement_list_id)
     else:
-        form = AddAchievementForm()
+        form = AddAchievementToListForm()
 
     context = {'contest':contest,
                'achievement_list':achievement_list,
                 'form':form,}
     return render(request,'gamequest/edit_achievement_list_achievements.html',context)
+
+
+class AddAchievementView(FormView):
+    template_name = 'gamequest/add_achievement.html'
+    form_class = AddAchievementForm
+
+    def get_success_url(self):
+        if(self.request.method == 'GET' ):
+            from_contest = self.request.GET.get('from_contest')
+            from_list = self.request.GET.get('from_list')
+        else:
+            from_contest = self.request.POST.get('from_contest')
+            from_list = self.request.POST.get('from_list')
+        success_url = reverse('edit_achievement_list_add',
+                              kwargs={'contest_id':from_contest,'achievement_list_id':from_list})
+        print success_url
+        return success_url
+
+    def form_valid(self, form):
+        form.save()
+        return super(AddAchievementView,self).form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super(AddAchievementView, self).get_context_data(**kwargs)
+        if(self.request.method == 'GET' ):
+            from_contest = self.request.GET.get('from_contest')
+            from_list = self.request.GET.get('from_list')
+        else:
+            from_contest = self.request.POST.get('from_contest')
+            from_list = self.request.POST.get('from_list')
+        context['from_contest'] = from_contest
+        context['from_list'] = from_list
+        return context
+             

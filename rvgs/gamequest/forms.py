@@ -14,13 +14,18 @@ class AchievementListForm(ModelForm):
         model = AchievementList
         fields = ['name','description']
 
-class AddAchievementForm(Form):
+class AddAchievementToListForm(Form):
     """
     Form presented to the user when adding achievements to an achievement list.
     """
     achievement = forms.ChoiceField(required=True)
 
     def __init__(self, *args, **kwargs):
-        super(AddAchievementForm,self).__init__(*args,**kwargs)
+        super(AddAchievementToListForm,self).__init__(*args,**kwargs)
         achievement_choices = [(achievement.id, unicode(achievement.game.name + "-" +achievement.name)) for achievement in Achievement.objects.all()]
         self.fields['achievement'].choices = achievement_choices
+
+class AddAchievementForm(ModelForm):
+    class Meta:
+        model = Achievement
+        feilds = ['game','name','description']

@@ -1,0 +1,13 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+
+<form method="post" action="{% url 'add_achievement' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="from_contest" value="{{from_contest}}">
+    <input type="hidden" name="from_list" value="{{from_list}}">
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
