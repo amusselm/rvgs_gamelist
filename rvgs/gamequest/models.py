@@ -12,7 +12,7 @@ class System(models.Model):
     emulated = models.BooleanField(default=False)
     emulating = models.ForeignKey("System",blank=True, null=True, on_delete=models.SET_NULL)
     def __str__(self):
-	return self.systemName
+        return self.systemName
 
 
 class Game(models.Model):
@@ -23,7 +23,7 @@ class Game(models.Model):
     name = models.CharField(max_length=100)
     ports = models.ManyToManyField(System)
     def __str__(self):
-	return self.name
+        return self.name
 
 class Contest(models.Model):
     """

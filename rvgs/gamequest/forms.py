@@ -26,6 +26,23 @@ class AddAchievementToListForm(Form):
         self.fields['achievement'].choices = achievement_choices
 
 class AddAchievementForm(ModelForm):
+    """
+    Form to add a new achievement to the system
+    """
     class Meta:
         model = Achievement
-        feilds = ['game','name','description']
+        fields = ['game','name','description']
+
+class AddGameForm(ModelForm):
+    """
+    Form to add a new game to the system
+    """
+    class Meta:
+        model = Game
+        fields = ['name','ports']
+
+    def __init__(self, *args, **kwargs):
+        super(AddGameForm,self).__init__(*args,**kwargs)
+        platforms = [(platform.id, unicode(platform.systemName)) for platform in System.objects.filter(emulated=False)]
+        self.fields['ports'].choices = platforms
+        

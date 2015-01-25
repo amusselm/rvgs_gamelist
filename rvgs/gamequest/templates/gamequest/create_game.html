@@ -2,11 +2,7 @@
 
 {% block content %}
 
-Don't see the game you want listed? 
-<a href="{% url 'create_game' %}?from_contest={{from_contest}}&from_list={{from_list}}">
-    Create New Game
-</a>
-<form method="post" action="{% url 'add_achievement' %}">
+<form method="post" action="{% url 'create_game' %}">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="from_contest" value="{{from_contest}}">

@@ -325,4 +325,16 @@ class AddAchievementView(AchievementLissRefrenceBaseView):
         form.save()
         return super(AddAchievementView,self).form_valid(form)
     
+class CreateGameView(AchievementLissRefrenceBaseView):
+    template_name = 'gamequest/create_game.html'
+    form_class = AddGameForm
 
+    def get_success_url(self):
+        from_contest = super(CreateGameView,self).get_contest() 
+        from_list = super(CreateGameView,self).get_list() 
+        success_url = reverse('add_achievement')+'?from_contest='+from_contest+'&from_list='+from_list
+        return success_url
+
+    def form_valid(self, form):
+        form.save()
+        return super(CreateGameView,self).form_valid(form)
