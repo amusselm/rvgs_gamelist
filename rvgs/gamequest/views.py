@@ -285,21 +285,32 @@ def achievementListAddAchievements(request,contest_id,achievement_list_id):
                 'form':form,}
     return render(request,'gamequest/edit_achievement_list_achievements.html',context)
 
+class AchievementLissRefrenceBaseView(FormView):
+    """A base class that's intended to be extended for any form that needs to refer
+      back to a specific contest and achievement list """
+    def get_contest(self):
+        if(self.request.method == 'GET' ):
+            from_contest = self.request.GET.get('from_contest')
+        else:
+            from_contest = self.request.POST.get('from_contest')
+        return from_contest
 
-class AddAchievementView(FormView):
+    def get_list(self):
+        if(self.request.method == 'GET' ):
+            from_list = self.request.GET.get('from_list')
+        else:
+            from_list = self.request.POST.get('from_list')
+        return from_list
+
+class AddAchievementView(AchievementLissRefrenceBaseView):
     template_name = 'gamequest/add_achievement.html'
     form_class = AddAchievementForm
 
     def get_success_url(self):
-        if(self.request.method == 'GET' ):
-            from_contest = self.request.GET.get('from_contest')
-            from_list = self.request.GET.get('from_list')
-        else:
-            from_contest = self.request.POST.get('from_contest')
-            from_list = self.request.POST.get('from_list')
+        from_contest = super(AddAchievementView,self).get_contest() 
+        from_list = super(AddAchievementView,self).get_list() 
         success_url = reverse('edit_achievement_list_add',
                               kwargs={'contest_id':from_contest,'achievement_list_id':from_list})
-        print success_url
         return success_url
 
     def form_valid(self, form):
@@ -308,12 +319,8 @@ class AddAchievementView(FormView):
     
     def get_context_data(self, **kwargs):
         context = super(AddAchievementView, self).get_context_data(**kwargs)
-        if(self.request.method == 'GET' ):
-            from_contest = self.request.GET.get('from_contest')
-            from_list = self.request.GET.get('from_list')
-        else:
-            from_contest = self.request.POST.get('from_contest')
-            from_list = self.request.POST.get('from_list')
+        from_contest = super(AddAchievementView,self).get_contest() 
+        from_list = super(AddAchievementView,self).get_list() 
         context['from_contest'] = from_contest
         context['from_list'] = from_list
         return context
