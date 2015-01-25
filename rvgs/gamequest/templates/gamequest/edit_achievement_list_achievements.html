@@ -3,7 +3,7 @@
 {% block content %}
 
 <a href="{% url 'add_achievement' %}?from_contest={{contest.id}}&from_list={{achievement_list.id}}">
-    Add Achievement
+    Add New Achievement
 </a>
 <form method="post" action="{% url 'edit_achievement_list_add' contest_id=contest.id achievement_list_id=achievement_list.id %}">
     {% csrf_token %}
