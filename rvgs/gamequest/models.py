@@ -30,7 +30,7 @@ class Contest(models.Model):
     An object to represent a 'contest', which is a collection of lists and a state
     """
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=4096)
+    description = models.TextField()
     upcoming = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
     archive = models.BooleanField(default=False)
@@ -45,7 +45,7 @@ class Achievement(models.Model):
     """
     game = models.ForeignKey(Game,blank=False, null=False,on_delete=models.CASCADE ) 
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=4096)
+    description = models.TextField()
     def __str__(self):
         return self.game.name + " - " + self.name
     
@@ -58,6 +58,7 @@ class Unlock(models.Model):
     timestamp = models.DateField(auto_now_add=True) 
     achievement = models.ForeignKey(Achievement,blank=False,null=False,on_delete=models.CASCADE)
     contest = models.ManyToManyField(Contest)
+    comment = models.TextField(default="")
     def __str__(self):
         return self.achievement.__str__() + " unlocked by " + self.user.username
 
@@ -70,7 +71,7 @@ class AchievementList(models.Model):
     achievements = models.ManyToManyField(Achievement)
     contest = models.ForeignKey(Contest,blank=False,null=False,on_delete=models.CASCADE) 
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=4096)
+    description = models.TextField()
     def __str__(self):
         return self.owner.username + "'s " + self.name + " list for " + self.contest.name
 
