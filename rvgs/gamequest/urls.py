@@ -22,4 +22,5 @@ urlpatterns = patterns('',
     url(r'^auth/login$', 'django.contrib.auth.views.login', {'template_name': 'gamequest/login.html'}, name="login"),
     url(r'^auth/user_redirect$',views.userProfileRedirect, name="user_profile_redirect"),
     url(r'^auth/logout$','django.contrib.auth.views.logout', {'template_name': 'gamequest/logged_out.html'}, name="logout"),
+    url(r'^auth/create_user$',views.CreateUserView.as_view(), name="create_user")
 )

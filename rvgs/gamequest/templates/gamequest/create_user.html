@@ -1,0 +1,12 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+<a href="{% url 'login' %}">Back to Login Page.</a><br>
+<form method="post" action="{% url 'create_user' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+
+{% endblock %}

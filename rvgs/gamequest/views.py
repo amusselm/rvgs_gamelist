@@ -4,6 +4,9 @@ from django.template import RequestContext, loader
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth import authenticate 
+
 from django.views.generic.edit import FormView
 
 from models import *
@@ -338,3 +341,21 @@ class CreateGameView(AchievementLissRefrenceBaseView):
     def form_valid(self, form):
         form.save()
         return super(CreateGameView,self).form_valid(form)
+
+class CreateUserView(FormView):
+    """
+    Proscess a reqeust for a new user account
+    """
+    template_name = 'gamequest/create_user.html'
+    form_class=NewUserForm
+     
+    def form_valid(self,form):
+        """Called after all parts of the form are validated.
+           In this instance, it does nearly all of the sanity checking in the 
+           class"""
+        new_user = form.save()
+        user = authenticate(username=new_user.username,password=form.clean_password2())
+        login(self.request,user)
+        return userProfileRedirect(self.request) 
+            
+
