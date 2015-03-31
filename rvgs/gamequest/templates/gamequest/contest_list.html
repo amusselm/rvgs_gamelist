@@ -1,0 +1,44 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+<p>
+    <b>Contests:</b>
+    {% if upcoming %}
+    <p>
+        <b>Upcoming</b>
+        <ul>
+	    {% for contest in upcoming %}
+            <li>
+                <a href="{% url 'contest' contest_id=contest.id %}">{{contest.name}}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </p>
+    {% endif %}
+    {% if active %}
+    <p>
+        <b>Active</b>
+        <ul>
+	    {% for contest in active %}
+            <li>
+                <a href="{% url 'contest' contest_id=contest.id %}">{{contest.name}}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </p>
+    {% endif %}
+    {% if archive %}
+    <p>
+        <b>Archive</b>
+        <ul>
+	    {% for contest in archive %}
+            <li>
+                <a href="{% url 'contest' contest_id=contest.id %}">{{contest.name}}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </p>
+    {% endif %}
+</p>
+
+{% endblock %}

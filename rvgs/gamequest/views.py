@@ -14,7 +14,17 @@ from gamequest.forms import *
 
 # Create your views here.
 def index(request):
-    return render(request, 'gamequest/base.html')
+    return contestListView(request)
+
+def contestListView(request):
+    upcoming_contests = Contest.objects.filter(upcoming=True)
+    active_contests = Contest.objects.filter(active=True)
+    archive_contests = Contest.objects.filter(archive=True)
+    context = {'upcoming':upcoming_contests,
+       'active':active_contests,
+       'archive':archive_contests,}
+    return render(request, 'gamequest/contest_list.html', context)
+
 
 def systemInfo(request, system_id):
     """
@@ -252,6 +262,7 @@ def achievementListRemove(request,contest_id,achievement_list_id):
                     'achievement_list':achievement_list,
                     }
         return render(request,'gamequest/remove_achievement_list.html',context)
+
 
 
 
