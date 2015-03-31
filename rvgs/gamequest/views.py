@@ -17,6 +17,9 @@ def index(request):
     return contestListView(request)
 
 def contestListView(request):
+    """
+    Display all contests.
+    """
     upcoming_contests = Contest.objects.filter(upcoming=True)
     active_contests = Contest.objects.filter(active=True)
     archive_contests = Contest.objects.filter(archive=True)
