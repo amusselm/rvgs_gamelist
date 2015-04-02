@@ -38,6 +38,9 @@ class Contest(models.Model):
     def __str__(self):
         return self.name
 
+    def UserInContest(self,user):
+        return Contest.objects.filter(participants=user).exists()
+
 class Achievement(models.Model):
     """
     An object to represent an achievement in game. Since games might have multiple 

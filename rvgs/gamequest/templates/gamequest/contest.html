@@ -3,10 +3,30 @@
 
 {% block content %}
 <p>
-   <b>Name:</b> {{ contest.name }}
+    <b>Name:</b> {{ contest.name }}<br>
+    {% if user.is_authenticated %}
+        {% if contest.ongoing or contest.upcoming %}
+            {% if user_in_contest %}
+                You are participating in this contest.
+                <a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">View Your Profile</a>
+            {% else %} 
+                You are not yet participating in this contest. 
+                <form action="{% url 'join_contest' contest_id=contest.id %}" method="post">
+                    {% csrf_token %}
+                    <button action="Submit">Join!</button>
+                </form>
+            {% endif %}
+        {% else %}
+            This Contest has passed. 
+            {% if user_in_contest %}
+                You participated in this contest.
+                <a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">View Your Profile</a>
+            {% endif %}
+        {% endif %}
+    {% endif %} 
 </p>
- <p>
-   <b>Description:</b> {{ contest.description }}
+<p>
+    <b>Description:</b> {{ contest.description }}
 </p>
 <p>
     <b>Recent Unlocks:</b>

@@ -81,9 +81,14 @@ def contestInfo(request, contest_id):
     except Contest.DoesNotExist:
         raise Http404
     else:
+        user_in_contest = False
+        if request.user.is_authenticated():
+            user_in_contest = contest.UserInContest(request.user)
         recent_unlocks = Unlock.objects.filter(contest__id = contest_id)
         recent_unlocks.order_by('timestamp')[:10]
-        context = {'contest':contest,'recent_unlocks':recent_unlocks,} 
+        context = {'contest':contest,
+                   'recent_unlocks':recent_unlocks,
+                   'user_in_contest':user_in_contest,} 
     return render(request,'gamequest/contest.html',context)
 
 def contestParticipantList(request, contest_id):
@@ -97,6 +102,22 @@ def contestParticipantList(request, contest_id):
     else:
         context = {'contest':contest,}
     return render (request, 'gamequest/contest_participant_list.html',context)
+
+@login_required 
+def contestJoin(request,contest_id):
+    """
+    Adds the user to the given contest if called as an HTTP POST Request
+    """
+    try:
+        contest = Contest.objects.get(pk=contest_id)
+    except Contest.DoesNotExist:
+        raise Http404
+    else:
+        if request.method == 'POST':
+            if contest.upcoming or contest.ongoing:
+                contest.participants.add(request.user)
+    return userProfileRedirect(request)
+        
 
 def contestAchievementListsAll(request, contest_id):
     """
