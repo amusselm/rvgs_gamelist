@@ -114,7 +114,7 @@ def contestJoin(request,contest_id):
         raise Http404
     else:
         if request.method == 'POST':
-            if contest.upcoming or contest.ongoing:
+            if contest.upcoming or contest.active:
                 contest.participants.add(request.user)
     return userProfileRedirect(request)
         
