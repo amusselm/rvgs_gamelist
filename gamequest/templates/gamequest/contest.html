@@ -5,7 +5,7 @@
 <p>
     <b>Name:</b> {{ contest.name }}<br>
     {% if user.is_authenticated %}
-        {% if contest.ongoing or contest.upcoming %}
+        {% if contest.active or contest.upcoming %}
             {% if user_in_contest %}
                 You are participating in this contest.
                 <a href="{% url 'contest_participant' contest_id=contest.id requested_username=user.username %}">View Your Profile</a>
