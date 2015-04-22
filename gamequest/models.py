@@ -8,7 +8,7 @@ class System(models.Model):
     emulate other systems. 
     """
     systemName = models.CharField(max_length=100)
-    systemDescription = models.CharField(max_length=512)
+    systemDescription = models.CharField(max_length=512,blank=True,null=True)
     emulated = models.BooleanField(default=False)
     emulating = models.ForeignKey("System",blank=True, null=True, on_delete=models.SET_NULL)
     def __str__(self):
