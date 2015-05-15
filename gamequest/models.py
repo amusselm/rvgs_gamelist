@@ -20,7 +20,8 @@ class Game(models.Model):
     An object to represent a particular game title. Keeps track of all platforms
     that the game has been ported to.
     """
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=2048)
+    description = models.TextField(default="")
     ports = models.ManyToManyField(System)
     def __str__(self):
         return self.name
@@ -47,8 +48,9 @@ class Achievement(models.Model):
     campaigns, it might be helpful to specify what we mean by completeion.
     """
     game = models.ForeignKey(Game,blank=False, null=False,on_delete=models.CASCADE ) 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=512)
     description = models.TextField()
+    score = models.IntegerField(default=0)
     def __str__(self):
         return self.game.name + " - " + self.name
     

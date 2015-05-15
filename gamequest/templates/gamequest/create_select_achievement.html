@@ -1,0 +1,32 @@
+{% extends "gamequest/base.html" %}
+
+{% block content %}
+
+<strong>Create or select an achievement for {{game}}</strong>
+
+<form method="post" action="{% url 'create_select_achievement' game_id=game.id %}">
+    <strong>Select an existing Achievement</strong>
+    <fieldset>
+    {% csrf_token %}
+    {{ select_achievement_form.as_p }}
+    <input type="hidden" name="action" value="{{SELECT_ACHIEVEMENT_PREFIX}}">
+    <input type="hidden" name="from_contest" value="{{from_contest}}">
+    <input type="hidden" name="from_list" value="{{from_list}}">
+    <input type="submit" value="Submit">
+    </fieldset>
+</form>
+-or-
+<form method="post" action="{% url 'create_select_achievement' game_id=game.id %}">
+    <strong>Create a new Achievement</strong>
+    <fieldset>
+    {% csrf_token %}
+    {{ create_achievement_form.as_p }}
+    <input type="hidden" name="action" value="{{CREATE_ACHIEVEMENT_PREFIX}}">
+    <input type="hidden" name="from_contest" value="{{from_contest}}">
+    <input type="hidden" name="from_list" value="{{from_list}}">
+    <input type="submit" value="Submit">
+    </fieldset>
+</form>
+<a href="{% url 'edit_achievement_list_add' contest_id=from_contest achievement_list_id=from_list %}">Cancel</a>
+
+{% endblock %}

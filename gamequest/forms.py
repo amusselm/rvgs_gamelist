@@ -16,15 +16,18 @@ class AchievementListForm(ModelForm):
         model = AchievementList
         fields = ['name','description']
 
-class AddAchievementToListForm(Form):
+class SelectAchievementForm(Form):
     """
     Form presented to the user when adding achievements to an achievement list.
     """
     achievement = forms.ChoiceField(required=True)
 
-    def __init__(self, *args, **kwargs):
-        super(AddAchievementToListForm,self).__init__(*args,**kwargs)
-        achievement_choices = [(achievement.id, unicode(achievement.game.name + "-" +achievement.name)) for achievement in Achievement.objects.all()]
+    def __init__(self,game, *args, **kwargs):
+        super(SelectAchievementForm,self).__init__(*args,**kwargs)
+        achievement_choices = [
+            (achievement.id, unicode(achievement.name))  
+            for achievement in Achievement.objects.filter(game__id=game.id)
+        ]
         self.fields['achievement'].choices = achievement_choices
 
 class AddAchievementForm(ModelForm):
@@ -33,7 +36,21 @@ class AddAchievementForm(ModelForm):
     """
     class Meta:
         model = Achievement
-        fields = ['game','name','description']
+        fields = ['name','description']
+
+class SelectGameForm(Form):
+    """
+    Form to select an existing game from a list
+    """
+    game = forms.ChoiceField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(SelectGameForm,self).__init__(*args,**kwargs)
+        game_choices = [(game.id, unicode(game.name)) \
+            for game in Game.objects.all().order_by('name')]
+        self.fields['game'].choices = game_choices
+
+
 
 class AddGameForm(ModelForm):
     """
@@ -41,7 +58,7 @@ class AddGameForm(ModelForm):
     """
     class Meta:
         model = Game
-        fields = ['name','ports']
+        fields = ['name','ports','description']
 
     def __init__(self, *args, **kwargs):
         super(AddGameForm,self).__init__(*args,**kwargs)

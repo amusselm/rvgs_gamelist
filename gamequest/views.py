@@ -1,13 +1,17 @@
-from django.shortcuts import render
-from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+
+from django.http import HttpResponse, Http404
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth import authenticate 
 
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
 
 from models import *
 from gamequest.forms import *
@@ -323,7 +327,7 @@ def achievementListAddAchievements(request,contest_id,achievement_list_id):
                 'form':form,}
     return render(request,'gamequest/edit_achievement_list_achievements.html',context)
 
-class AchievementLissRefrenceBaseView(FormView):
+class AchievementListRefrenceBaseView(TemplateView):
     """A base class that's intended to be extended for any form that needs to refer
       back to a specific contest and achievement list """
     def get_contest(self):
@@ -341,14 +345,191 @@ class AchievementLissRefrenceBaseView(FormView):
         return from_list
 
     def get_context_data(self, **kwargs):
-        context = super( AchievementLissRefrenceBaseView, self).get_context_data(**kwargs)
+        context = super( AchievementListRefrenceBaseView, self).get_context_data(**kwargs)
         from_contest = self.get_contest() 
         from_list = self.get_list() 
         context['from_contest'] = from_contest
         context['from_list'] = from_list
         return context
 
-class AddAchievementView(AchievementLissRefrenceBaseView):
+class CreateSelectGameView(AchievementListRefrenceBaseView):
+    """ 
+    View class for handleing the add select game screen
+    """
+    template_name = 'gamequest/create_select_game.html'
+
+    #These two 'constants' are used to for form prefixes
+    # so that we can tell the difference between these forms when the user 
+    # submits them
+    CREATE_GAME_PREFIX = 'create_game'
+    SELECT_GAME_PREFIX = 'select_game'
+
+    def get(self, request):
+        create_game_form = AddGameForm(prefix=self.CREATE_GAME_PREFIX)
+        select_game_form = SelectGameForm(prefix=self.SELECT_GAME_PREFIX)
+        from_contest = super(CreateSelectGameView,self).get_contest() 
+        from_list = super(CreateSelectGameView,self).get_list() 
+        context= { 
+            'select_game_form' : select_game_form,
+            'create_game_form' : create_game_form,
+            'from_contest' : from_contest,
+            'from_list' : from_list,
+            'CREATE_GAME_PREFIX':self.CREATE_GAME_PREFIX,
+            'SELECT_GAME_PREFIX':self.SELECT_GAME_PREFIX
+        }
+
+        return render (request, 'gamequest/create_select_game.html',context)
+
+    def post(self, request):
+        create_game_form= AddGameForm(prefix=self.CREATE_GAME_PREFIX)
+        select_game_form = SelectGameForm(prefix=self.SELECT_GAME_PREFIX)
+        success = False
+    
+        #Default to proscessing the create game form if we can't tell which 
+        #form the user submitted
+        action = self.request.POST.get('action',self.CREATE_GAME_PREFIX)
+
+        if action==self.CREATE_GAME_PREFIX:
+            create_game_form= AddGameForm(request.POST,prefix=self.CREATE_GAME_PREFIX)
+            if create_game_form.is_valid():
+                game = create_game_form.save()
+                success = True
+        elif action==self.SELECT_GAME_PREFIX:
+            select_game_form = SelectGameForm(request.POST,prefix=self.SELECT_GAME_PREFIX)
+            if select_game_form.is_valid():
+                game = Game.objects.get(pk=select_game_form.cleaned_data['game']) 
+                success = True
+        else:
+            raise ValueError
+
+        from_contest = super(CreateSelectGameView,self).get_contest() 
+        from_list = super(CreateSelectGameView,self).get_list() 
+        if success: 
+            # If the form is valid, we prosceed to the next page
+            success_url = reverse('create_select_achievement',
+                kwargs={'game_id':game.id} ) + \
+                '?from_contest='+from_contest+ \
+                '&from_list='+from_list
+            return redirect(success_url)
+        else:
+            #... Otherwise, we re-render the page so the user can correct their error
+            context= { 
+                'select_game_form' : select_game_form,
+                'create_game_form' : create_game_form,
+                'from_contest' : from_contest,
+                'from_list' : from_list,
+                'CREATE_GAME_PREFIX':self.CREATE_GAME_PREFIX,
+                'SELECT_GAME_PREFIX':self.SELECT_GAME_PREFIX
+            }
+            return render (request, 'gamequest/create_select_game.html',context)
+
+class CreateSelectAchievementView(AchievementListRefrenceBaseView):
+    """ 
+    View class for handleing the add select achievement screen
+    """
+    template_name = 'gamequest/create_select_achievement.html'
+
+    #These two 'constants' are used to for form prefixes
+    # so that we can tell the difference between these forms when the user 
+    # submits them
+    CREATE_ACHIEVEMENT_PREFIX = 'create_achievement'
+    SELECT_ACHIEVEMENT_PREFIX = 'select_achievement'
+
+    def get(self, request, game_id):
+        try:
+            game=Game.objects.get(pk=game_id)
+        except Game.DoesNotExist:
+            raise Http404
+        create_achievement_form = AddAchievementForm(prefix=self.CREATE_ACHIEVEMENT_PREFIX)
+        select_achievement_form = SelectAchievementForm(game=game,prefix=self.SELECT_ACHIEVEMENT_PREFIX)
+        from_contest = super(CreateSelectAchievementView,self).get_contest() 
+        from_list = super(CreateSelectAchievementView,self).get_list() 
+        context= { 
+            'select_achievement_form' : select_achievement_form,
+            'create_achievement_form' : create_achievement_form,
+            'from_contest' : from_contest,
+            'from_list' : from_list,
+            'game' : game,
+            'CREATE_ACHIEVEMENT_PREFIX':self.CREATE_ACHIEVEMENT_PREFIX,
+            'SELECT_ACHIEVEMENT_PREFIX':self.SELECT_ACHIEVEMENT_PREFIX
+        }
+
+        return render (request,'gamequest/create_select_achievement.html',context)
+
+    def post(self, request,game_id):
+        try:
+            game=Game.objects.get(pk=game_id)
+        except Game.DoesNotExist:
+            raise Http404
+        create_achievement_form= AddAchievementForm(prefix=self.CREATE_ACHIEVEMENT_PREFIX)
+        select_achievement_form = SelectAchievementForm(game=game,prefix=self.SELECT_ACHIEVEMENT_PREFIX)
+        success = False
+    
+        #Default to proscessing the create achievement form if we can't tell which 
+        #form the user submitted
+        action = self.request.POST.get('action',self.CREATE_ACHIEVEMENT_PREFIX)
+
+        if action==self.CREATE_ACHIEVEMENT_PREFIX:
+            create_achievement_form= AddAchievementForm(request.POST,prefix=self.CREATE_ACHIEVEMENT_PREFIX)
+            if create_achievement_form.is_valid():
+                achievement = create_achievement_form.save(commit=False)
+                achievement.game = game
+                achievement.save()
+                success = True
+        elif action==self.SELECT_ACHIEVEMENT_PREFIX:
+            select_achievement_form = SelectAchievementForm(request.POST,
+                                                            prefix=self.SELECT_ACHIEVEMENT_PREFIX,
+                                                            game=game);
+            if select_achievement_form.is_valid():
+                achievement = Achievement.objects.get(pk=select_achievement_form.cleaned_data['achievement']) 
+                success = True
+        else:
+            raise ValueError
+
+        from_contest = super(CreateSelectAchievementView,self).get_contest() 
+        from_list = super(CreateSelectAchievementView,self).get_list() 
+        if success: 
+            #First, remember to acctually add it to the user's list
+            self.add_to_user_list(achievement,from_list,request.user)
+            # If the form is valid, we prosceed to the user's contest profile
+            success_url = reverse('edit_achievement_list',kwargs=
+                                      {'contest_id':from_contest,
+                                      'achievement_list_id':from_list}
+                                  )
+            return redirect(success_url)
+        else:
+            #... Otherwise, we re-render the page so the user can correct their error
+            context= { 
+                'select_achievement_form' : select_achievement_form,
+                'create_achievement_form' : create_achievement_form,
+                'from_contest' : from_contest,
+                'from_list' : from_list,
+                'game' : game,
+                'CREATE_ACHIEVEMENT_PREFIX':self.CREATE_ACHIEVEMENT_PREFIX,
+                'SELECT_ACHIEVEMENT_PREFIX':self.SELECT_ACHIEVEMENT_PREFIX
+            }
+            return render (request, 'gamequest/create_select_achievement.html',context)
+    
+    def add_to_user_list(self,achievement,achievement_list_id,user):
+        if user.is_authenticated():
+            try:
+                achievement_list = AchievementList.objects.get(pk=achievement_list_id) 
+            except AchievementList.DoesNotExist:
+                raise Http404
+
+            #Users should only be able to add to a list when they own it
+            if user != achievement_list.owner:
+                raise PermissionDenied
+
+            #Users should not be able to add items to their list once the contest has
+            # started. 
+            if not achievement_list.contest.upcoming:
+                raise PermissionDenied
+            
+            achievement_list.achievements.add(achievement)
+
+
+class AddAchievementView(AchievementListRefrenceBaseView):
     template_name = 'gamequest/add_achievement.html'
     form_class = AddAchievementForm
 
@@ -363,19 +544,6 @@ class AddAchievementView(AchievementLissRefrenceBaseView):
         form.save()
         return super(AddAchievementView,self).form_valid(form)
     
-class CreateGameView(AchievementLissRefrenceBaseView):
-    template_name = 'gamequest/create_game.html'
-    form_class = AddGameForm
-
-    def get_success_url(self):
-        from_contest = super(CreateGameView,self).get_contest() 
-        from_list = super(CreateGameView,self).get_list() 
-        success_url = reverse('add_achievement')+'?from_contest='+from_contest+'&from_list='+from_list
-        return success_url
-
-    def form_valid(self, form):
-        form.save()
-        return super(CreateGameView,self).form_valid(form)
 
 class CreateUserView(FormView):
     """
