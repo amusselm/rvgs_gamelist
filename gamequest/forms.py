@@ -22,7 +22,8 @@ class SelectAchievementForm(Form):
     """
     achievement = forms.ChoiceField(required=True)
 
-    def __init__(self,game, *args, **kwargs):
+    def __init__(self,  *args, **kwargs):
+        game = kwargs.pop('game',None)
         super(SelectAchievementForm,self).__init__(*args,**kwargs)
         achievement_choices = [
             (achievement.id, unicode(achievement.name))  
